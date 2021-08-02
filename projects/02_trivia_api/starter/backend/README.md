@@ -77,29 +77,254 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 
 
-## Review Comment to the Students
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+## Endpoints
 
-Endpoints
-GET '/api/v1.0/categories'
-GET ...
-POST ...
-DELETE ...
-
-GET '/api/v1.0/categories'
+### GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+
+### Sample 
+
+```bash
+curl http://127.0.0.1:5000/categories
+```
+
+```
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
-
 ```
 
+### GET '/questions'
+- Fetches a dictionary of questions in which the keys are the ids and the value is the corresponding string of the questions
+- Request Arguments: Page number
+- Returns: An object which has questions, total_questions, categories and current_category. 
+
+### Sample 
+
+```bash
+curl http://127.0.0.1:5000/questions
+```
+
+```
+{
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }, 
+    {
+      "answer": "Brazil", 
+      "category": 6, 
+      "difficulty": 3, 
+      "id": 10, 
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, 
+    {
+      "answer": "The Palace of Versailles", 
+      "category": 3, 
+      "difficulty": 3, 
+      "id": 14, 
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 20
+}
+```
+
+### DELETE '/questions/<question_id>'
+- Deletes a question corresponding to the id
+
+### Sample 
+
+```bash
+curl -X DELETE http://127.0.0.1:5000/questions/14
+```
+
+```
+{
+  "deleted": 14, 
+  "success": true
+}
+```
+
+### POST '/questions'
+- Creates or Searches questions
+
+### Sample for creating a new question
+
+```bash
+curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question":"In what year was the first-ever Wimbledon Championship held?","answer":"1877","difficulty":1,"category":6}'
+```
+
+```
+{
+  "created": 39, 
+  "questions": [
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    .........
+    ..........
+  ], 
+  "success": true, 
+  "total_questions": 20
+}
+```
+
+### Sample for searching a question
+
+```bash
+curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"search": "wimbledon"}'
+```
+
+```
+{
+  "questions": [
+    {
+      "answer": "1877", 
+      "category": 6, 
+      "difficulty": 1, 
+      "id": 39, 
+      "question": "In what year was the first-ever Wimbledon Championship held?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 1
+}
+```
+
+### GET '/categories/<category_id>/questions'
+- Get questions by categories
+
+### Sample
+
+```bash
+curl http://127.0.0.1:5000/categories/6/questions 
+```
+
+```
+{
+  "current_category": 6, 
+  "questions": [
+    {
+      "answer": "Brazil", 
+      "category": 6, 
+      "difficulty": 3, 
+      "id": 10, 
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "1877", 
+      "category": 6, 
+      "difficulty": 1, 
+      "id": 39, 
+      "question": "In what year was the first-ever Wimbledon Championship held?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 3
+}
+```
+
+### POST '/quizzes'
+- Play quiz
+
+### Sample
+
+```bash
+curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category":{"type":"Sports","id":6},"previous_questions":[10]}'
+```
+
+```
+{
+  "question": {
+    "answer": "Uruguay", 
+    "category": 6, 
+    "difficulty": 4, 
+    "id": 11, 
+    "question": "Which country won the first ever soccer World Cup in 1930?"
+  }, 
+  "success": true
+}
+```
 
 ## Testing
 To run the tests, run
