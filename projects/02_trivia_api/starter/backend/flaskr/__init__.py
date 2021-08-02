@@ -5,8 +5,7 @@ from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
-
-QUESTIONS_PER_PAGE = 10
+from config import *
 
 def create_app(test_config=None):
   # create and configure the app
@@ -63,8 +62,8 @@ def create_app(test_config=None):
 
   def paginate_questions(request, selection):
     page = request.args.get('page', 1, type=int)
-    start = (page - 1) * 10
-    end = start + 10
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
 
     questions = [question.format() for question in selection]
     current_questions = questions[start:end]
@@ -144,7 +143,7 @@ def create_app(test_config=None):
     new_answer = body.get('answer', None)
     new_difficulty = body.get('difficulty', None)
     new_category  = body.get('category', None)
-    search = body.get('search', None)
+    search = body.get('searchTerm', None)
 
     try:
       if search:
@@ -208,7 +207,7 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
     body = request.get_json()
-
+    
     if body == None or 'quiz_category' not in body.keys():
       return abort(422)
 
@@ -217,14 +216,18 @@ def create_app(test_config=None):
     previous_questions = []
     if 'previous_questions' in body.keys():
       previous_questions = body['previous_questions'] 
-    
+
     try:
       if quiz_category['id'] == 0:
         questions = Question.query.filter(Question.id.notin_(previous_questions)).all()
       else:
         questions = Question.query.filter(Question.category == quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
       
-      final_question = random.choice(questions).format()
+      if len(questions) > 0:
+          final_question = random.choice(questions).format()
+      else:
+        final_question = None
+      
       return jsonify({
         'success': True,
         'question': final_question
